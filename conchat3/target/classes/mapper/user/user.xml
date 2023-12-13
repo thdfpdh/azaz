@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- Dao: query 찾는 분류 기준 
+        namespace + id -> com.pcwk.ehr.anno.doSelectOne
+  -->
+  <mapper namespace="com.pcwk.ehr.user">
+    <resultMap type="UserVO"  id="userMap">
+        <result column = "no" property = "no"/>
+        <result column = "nm" property = "nm"/>
+        <result column = "birth" property = "birth"/>
+        <result column = "id" property = "id"/>
+        <result column = "pw" property = "pw"/>
+        <result column = "email" property = "email"/>
+        <result column = "reg_ymd" property = "reg_ymd"/>
+        <result column = "chat" property = "chat"/>
+        <result column = "act" property = "act"/>
+        <result column = "tier" property = "tier"/>
+        <result column = "click" property = "click"/>
+        <result column = "port" property = "port"/>
+        <result column = "pop_scr" property = "pop_scr"/>
+    </resultMap>
+    
+    <sql id="searchCondition">
+    <where>
+       <choose>
+           <when test="searchDiv != null and searchDiv == '10'">
+               userId = #{searchWord}
+           </when>
+           <when test="searchDiv != null and searchDiv == '20'">
+               name LIKE #{searchWord} || '%'
+           </when>
+           <when test="searchDiv != null and searchDiv == '30'">
+               email LIKE #{searchWord} || '%'
+           </when>
+       </choose>
+    </where>
+    </sql>
+    
+    <select id="doRetrieve"  parameterType = "UserVO" resultType = "UserVO">
+        SELECT A.*, B.*
+        FROM(
+            SELECT TT1.rnum AS no, 
+                   TT1.user_id, 
+                   TT1.name, 
+                   TT1.u_level as levelIntValue, 
+                   TT1.login, 
+                   TT1.recommend, 
+                   TT1.email, 
+                   DECODE(TO_CHAR(TT1.reg_dt, 'YYYY-MM-DD'), TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+                          TO_CHAR(TT1.reg_dt, 'HH24:MI'), TO_CHAR(TT1.reg_dt, 'YYYY-MM-DD')) AS reg_dt
+            FROM(SELECT ROWNUM AS rnum, T1.*
+                 FROM (SELECT *
+                       FROM users
+                       -- WHERE 조건 user_id(10), name(20), email(30)
+                       <include refid="searchCondition"></include>
+                       ORDER BY reg_dt DESC) T1
+<![CDATA[                WHERE ROWNUM <= (#{pageSize} * (#{pageNo} - 1) + #{pageSize}) 
+            ) TT1
+            WHERE rnum >= (#{pageSize} * (#{pageNo} - 1) + 1)  ]]>
+          ) A
+        CROSS JOIN
+        (SELECT COUNT(*) total_cnt
+         FROM users
+         <include refid="searchCondition"></include>
+         ) B
+    </select>
+  
+    <select id="getAll" parameterType = "UserVO" resultMap = "userMap">
+         SELECT  t1.user_id,                                      
+                 t1.name,                                         
+                 t1.password ,                                     
+                 t1.u_level,                                      
+                 t1.login,                                        
+                 t1.recommend,                                    
+                 t1.email,                                        
+                 TO_CHAR(t1.reg_dt,'YYYY-MM-DD HH24:MI:SS') AS regDt
+         FROM                                                     
+            users t1                                             
+        WHERE user_id LIKE #{userId} || '%'                              
+        ORDER BY t1.user_id                                      
+    </select>
+  
+    <select id="getCount" parameterType = "UserVO" resultType = "int">
+        SELECT COUNT(*) AS cnt        
+        FROM                       
+            users                  
+        WHERE id LIKE #{id} || '%'
+    </select>
+  
+    <update id="doUpdate" parameterType = "UserVO">
+        UPDATE users         
+        SET chat = #{chat},
+            act = #{act},
+            tier = #{tier},
+            click = #{click},
+            port = #{port},
+            pop_scr = #{pop_scr}
+        WHERE
+            id = #{id}
+    </update>
+  
+    <select id="doSelectOne" parameterType = "UserVO" resultType = "UserVO">
+        SELECT                    
+            no,
+            nm,
+            birth,
+            id,
+            pw,
+            email,
+            TO_CHAR(reg_ymd, 'YYYY.MM.DD HH24:MI:SS') AS regYmd,
+            chat,
+            act,
+            tier,
+            click,
+            port,
+            pop_scr
+        FROM
+            users
+        WHERE id = #{id}
+    </select>
+  
+    <insert id="doSave" parameterType = "UserVO">
+        INSERT INTO users(
+        nm,
+        birth,
+        id,
+        pw,
+        email,
+        reg_ymd,
+        chat,
+        act
+        ) VALUES (          
+            #{nm},
+            #{birth},
+            #{id},
+            #{pw},
+            #{email},
+            SYSDATE,
+            #{chat},
+            #{act}
+        )                   
+    </insert>
+  
+    <delete id = "doDelete" parameterType = "UserVO">
+        DELETE FROM users
+        WHERE id = #{id}
+    </delete>
+    
+  </mapper>
