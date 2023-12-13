@@ -11,6 +11,7 @@ public interface UserService {
 	 * @param inVO
 	 * @throws SQLException
 	 */
+<<<<<<< HEAD
 	public void add(UserVO inVO) throws SQLException;	
 	
 	/**
@@ -19,4 +20,14 @@ public interface UserService {
 	 * @throws SQLException
 	 */
 	public void upgradeLevels(UserVO inVO) throws SQLException;	
+=======
+	public void add(UserVO inVO) throws SQLException;
+	
+	/**
+	 * 회원등업
+	 * @param inVO
+	 * @throws SQLException
+	 */
+	public void upgradeLevels(UserVO inVO) throws SQLException;
+>>>>>>> branch 'main' of https://github.com/thdfpdh/azaz.git
 }

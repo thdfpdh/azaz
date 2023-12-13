@@ -15,6 +15,7 @@ public interface UserDao {
 
 	int getCount(UserVO inVO) throws SQLException;
 
+<<<<<<< HEAD
 	// ctrl+o : class 내 메소드
 	int del(UserVO inVO) throws SQLException;
 
@@ -26,6 +27,17 @@ public interface UserDao {
 	 * @param inVO
 	 * @return 1(성공)/0(실패)
 	 * @throws SQLException
+=======
+	int del(UserVO inVO) throws SQLException;
+
+	UserVO get(UserVO inVO) throws SQLException, EmptyResultDataAccessException;
+
+	/**
+	 * 단건등록
+	 * 
+	 * @param inVO
+	 * @return1(성공)/0(실패) @throws SQLException
+>>>>>>> branch 'main' of https://github.com/thdfpdh/azaz.git
 	 * @throws ClassNotFoundException
 	 */
 	int add(UserVO inVO) throws SQLException;

@@ -12,6 +12,7 @@ public class TestUserService extends UserServiceImpl {
 		super();
 		this.id = id;
 	}
+<<<<<<< HEAD
 	
 	@Override
 	protected void upgradeLevel(UserVO inVO) throws SQLException {
@@ -24,3 +25,17 @@ public class TestUserService extends UserServiceImpl {
 		
 	}
 }
+=======
+
+	@Override
+	protected void upgradeLevel(UserVO inVO) throws SQLException {
+		if (id.equals(inVO.getUserId())) {
+			throw new TestUserServiceException(id+"에서 예외 발생!");
+		}
+		
+		super.upgradeLevel(inVO);
+		
+	}
+
+}
+>>>>>>> branch 'main' of https://github.com/thdfpdh/azaz.git
