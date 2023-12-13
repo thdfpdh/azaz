@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		
+    <bean id = "dataSource" class = "org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="oracle.jdbc.driver.OracleDriver"></property>
+        <property name="url" value="jdbc:oracle:thin:@192.168.0.123:1521:xe"></property>
+        <property name="username" value="scott"></property>
+        <property name="password" value="pcwk"></property>
+    </bean>
+    <bean id = "userDao" class = "com.pcwk.ehr.UserDao">
+        <!-- setter 통한 주입(DI) -->
+        <property name="dataSource" ref = "dataSource"></property>
+    </bean>
+
+</beans>
